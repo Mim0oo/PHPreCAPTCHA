@@ -43,6 +43,6 @@ die ("The reCAPTCHA wasn't entered correctly. Go back and try it again.");
 
 PHPreCAPTCHA v0.1
 GNU General Public License v3.0
-This is a PHP library for Google's reCAPTCHA V2.0
+This is a PHP library for Google's reCAPTCHA 2.0
 Created by Martin Georgiev, geeorgiev[at]gmail.com
-Web: www.viziongames.com
+https://www.viziongames.com
