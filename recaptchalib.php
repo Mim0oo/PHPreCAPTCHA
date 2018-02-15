@@ -14,17 +14,23 @@ class recaptchalib
     /**
      * @var string
      */
-    protected $glSecret;
+    protected $secret;
 
     /**
      * @var string
      */
-    protected $glURL;
+    protected $response;
 
-    function __construct()
+    /**
+     * @var string
+     */
+    protected $URL;
+
+    function __construct($secret, $response)
     {
-        $this->glSecret = '<yoursecret>';
-        $this->glURL = 'https://www.google.com/recaptcha/api/siteverify';
+        $this->secret = $secret;
+        $this->response = $response;
+        $this->URL = 'https://www.google.com/recaptcha/api/siteverify';
     }
 
     /**
@@ -34,10 +40,10 @@ class recaptchalib
      * @param string $response
      * @return booleans
      */
-    public function isValid($response)
+    public function isValid()
     {
         $data = array(
-            'secret' => $this->glSecret,
+            'secret' => $this->secret,
             'response' => $response
         );
 
@@ -51,8 +57,30 @@ class recaptchalib
 
         $context  = stream_context_create($options);
         $verify = file_get_contents($url, false, $context);
-        $captcha_success=json_decode($verify);
 
-        return $captcha_success->success;
+        return $this->fromJson($verify);
+    }
+
+    /**
+     * Return response from the expected JSON returned by the service.
+     *
+     * @param string $json
+     * @return string
+     */
+    public function fromJson($json)
+    {
+        $responseData = json_decode($json, true);
+        if (!$responseData) {
+            return false;
+        }
+        $hostname = isset($responseData['hostname']) ? $responseData['hostname'] : null;
+
+        if (isset($responseData['success']) && $responseData['success'] == true) {
+            return $responseData['success'];
+        }
+        if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
+            return false;
+        }
+        return false;
     }
 }
