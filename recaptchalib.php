@@ -44,7 +44,7 @@ class recaptchalib
     {
         $data = array(
             'secret' => $this->secret,
-            'response' => $response
+            'response' => $this->response
         );
 
         $options = array(
@@ -56,7 +56,7 @@ class recaptchalib
         );
 
         $context  = stream_context_create($options);
-        $verify = file_get_contents($url, false, $context);
+        $verify = file_get_contents($this->URL, false, $context);
 
         return $this->fromJson($verify);
     }
